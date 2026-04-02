@@ -1,0 +1,16 @@
+export const KEYBOARD_SHORTCUTS = [
+  { key: '0-9, .', action: 'shortcuts.numbers' },
+  { key: '+, -, *, /', action: 'shortcuts.operators' },
+  { key: 'Enter', action: 'shortcuts.calculate' },
+  { key: 'Backspace', action: 'shortcuts.delete' },
+  { key: 'Escape', action: 'shortcuts.clear' },
+  { key: '(', action: 'shortcuts.open_paren' },
+  { key: ')', action: 'shortcuts.close_paren' },
+  { key: '^', action: 'shortcuts.power' },
+  { key: 's', action: 'shortcuts.sin' },
+  { key: 'c', action: 'shortcuts.cos' },
+  { key: 't', action: 'shortcuts.tan' },
+  { key: 'l', action: 'shortcuts.log' },
+  { key: 'n', action: 'shortcuts.ln' },
+  { key: 'i', action: 'shortcuts.imaginary' },
+];

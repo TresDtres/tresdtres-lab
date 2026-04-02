@@ -13,13 +13,15 @@ Este proyecto ha sido desarrollado íntegramente utilizando **Google Gemini**, d
 *   **Velocidad de Implementación:** Lo que antes tomaba semanas de arquitectura y codificación manual, se ha logrado en tiempo récord gracias a la capacidad de Gemini para generar lógica matemática compleja y estructuras de componentes robustas.
 *   **Lógica Matemática de Precisión:** La implementación de algoritmos avanzados como la **Factorización LU**, análisis estadístico y resolución de ecuaciones se realizó con una precisión milimétrica, aprovechando el vasto conocimiento de la IA en ciencias exactas.
 *   **Diseño UI/UX Iterativo:** La interfaz ha evolucionado constantemente. Gracias a la IA, se han podido realizar ajustes finos en el **Modo Oscuro**, la accesibilidad y la ergonomía visual de forma instantánea.
-*   **Código Limpio y Escalable:** Gemini ha estructurado el proyecto utilizando **TypeScript** y **React 19**, asegurando que el código sea mantenible, tipado y preparado para futuras expansiones.
+*   **Código Limpio y Escalable:** Gemini ha estructurado el proyecto utilizando **TypeScript** y **React 19**, asegurando que el código sea mantenible, tipado y preparado para futuras expansiones. Recientemente se ha refactorizado la arquitectura para desacoplar componentes críticos como los ajustes y el manejo de errores.
+*   **Seguridad y Robustez:** Implementación de un **Global Error Boundary** (Kernel Panic) que detecta errores de ejecución y desbordamientos en tiempo real, protegiendo la experiencia del usuario.
 *   **Mejora Continua:** El proyecto está en "Progreso de Mejoras" constante. La IA permite identificar cuellos de botella y proponer nuevas funcionalidades de manera proactiva.
 
 ## 🛠️ Características Principales
 
 *   **Calculadora Científica:** Funciones trigonométricas, logarítmicas y exponenciales con historial de cálculos.
 *   **Matrices Avanzadas:** Operaciones básicas, determinantes, inversas y **Factorización LU** con verificación en tiempo real.
+*   **Exportación PDF (Beta):** Capacidad de generar documentos PDF profesionales directamente desde la Hoja de Trabajo (Worksheet), ideal para que los estudiantes guarden sus desarrollos paso a paso.
 *   **Estadística:** Análisis de datos con cálculo de media, mediana, desviación estándar y varianza.
 *   **Resolución de Ecuaciones:** Solucionador de sistemas lineales y ecuaciones cuadráticas.
 *   **Conversor de Unidades Pro:** Tres modos de conversión: Básico, Análisis Dimensional y Soluciones Químicas.
@@ -34,13 +36,15 @@ Este proyecto ha sido desarrollado íntegramente utilizando **Google Gemini**, d
 *   **Estilos:** Tailwind CSS 4 (Moderno y ultra-rápido)
 *   **Motores Matemáticos:** `math.js` y `ml-matrix`
 *   **Visualización:** `d3` y `recharts`
+*   **Exportación:** `jspdf` y `jspdf-autotable`
 *   **Animaciones:** `motion` (para una experiencia de usuario fluida)
 *   **IA:** `@google/genai` (Gemini API)
 
 ## 📈 Estado del Proyecto
 
 **TRESDTRES LAB** se encuentra en una fase de mejora continua. Estamos trabajando en:
-- [ ] Exportación de reportes en PDF.
+- [x] Exportación básica a PDF.
+- [ ] Integración completa de LaTeX para fórmulas matemáticas.
 - [ ] Más tipos de gráficos avanzados.
 - [ ] Integración de reconocimiento de escritura manual mediante IA.
 
