@@ -12,14 +12,17 @@ Este proyecto ha sido desarrollado íntegramente utilizando **Google Gemini**, d
 
 *   **Velocidad de Implementación:** Lo que antes tomaba semanas de arquitectura y codificación manual, se ha logrado en tiempo récord gracias a la capacidad de Gemini para generar lógica matemática compleja y estructuras de componentes robustas.
 *   **Lógica Matemática de Precisión:** La implementación de algoritmos avanzados como la **Factorización LU**, análisis estadístico y resolución de ecuaciones se realizó con una precisión milimétrica, aprovechando el vasto conocimiento de la IA en ciencias exactas.
-*   **Diseño UI/UX Iterativo:** La interfaz ha evolucionado constantemente. Gracias a la IA, se han podido realizar ajustes finos en el **Modo Oscuro**, la accesibilidad y la ergonomía visual de forma instantánea.
+*   **Diseño UI/UX Iterativo:** La interfaz ha evolucionado constantemente. Gracias a la IA, se han podido realizar ajustes finos en el **Modo Oscuro**, la accesibilidad y la ergonomía visual de forma instantánea. Se han implementado transiciones dinámicas entre pantallas con efectos de deslizamiento horizontal que varían según la distancia entre módulos.
 *   **Código Limpio y Escalable:** Gemini ha estructurado el proyecto utilizando **TypeScript** y **React 19**, asegurando que el código sea mantenible, tipado y preparado para futuras expansiones. Recientemente se ha refactorizado la arquitectura para desacoplar componentes críticos como los ajustes y el manejo de errores.
+*   **Modo Tutor (Pizarra):** Implementación de un sistema de aprendizaje que explica el paso a paso de las operaciones matemáticas, renderizando fórmulas en una "pizarra" virtual con estética educativa.
 *   **Seguridad y Robustez:** Implementación de un **Global Error Boundary** (Kernel Panic) que detecta errores de ejecución y desbordamientos en tiempo real, protegiendo la experiencia del usuario.
 *   **Mejora Continua:** El proyecto está en "Progreso de Mejoras" constante. La IA permite identificar cuellos de botella y proponer nuevas funcionalidades de manera proactiva.
 
 ## 🛠️ Características Principales
 
-*   **Calculadora Científica:** Funciones trigonométricas, logarítmicas y exponenciales con historial de cálculos.
+*   **Calculadora Científica:** Funciones trigonométricas, logarítmicas y exponenciales con historial de cálculos e integración completa de **KaTeX** para visualización de fórmulas naturales.
+*   **Laboratorio de Álgebra:** Nuevo módulo para trabajar con expresiones simbólicas (polinomios, binomios). Permite simplificar, expandir y evaluar expresiones asignando valores a variables (x, y, z) en tiempo real.
+*   **Modo Tutor:** Una pizarra interactiva que analiza tus cálculos y te guía a través de la jerarquía de operaciones (PEMDAS) y conceptos matemáticos, ideal para el aprendizaje autodidacta.
 *   **Matrices Avanzadas:** Operaciones básicas, determinantes, inversas y **Factorización LU** con verificación en tiempo real.
 *   **Exportación PDF (Beta):** Capacidad de generar documentos PDF profesionales directamente desde la Hoja de Trabajo (Worksheet), ideal para que los estudiantes guarden sus desarrollos paso a paso.
 *   **Estadística:** Análisis de datos con cálculo de media, mediana, desviación estándar y varianza.
@@ -35,6 +38,7 @@ Este proyecto ha sido desarrollado íntegramente utilizando **Google Gemini**, d
 *   **Frontend:** React 19 + TypeScript
 *   **Estilos:** Tailwind CSS 4 (Moderno y ultra-rápido)
 *   **Motores Matemáticos:** `math.js` y `ml-matrix`
+*   **Renderizado Matemático:** `KaTeX` (Para fórmulas de alta fidelidad)
 *   **Visualización:** `d3` y `recharts`
 *   **Exportación:** `jspdf` y `jspdf-autotable`
 *   **Animaciones:** `motion` (para una experiencia de usuario fluida)
@@ -44,7 +48,9 @@ Este proyecto ha sido desarrollado íntegramente utilizando **Google Gemini**, d
 
 **TRESDTRES LAB** se encuentra en una fase de mejora continua. Estamos trabajando en:
 - [x] Exportación básica a PDF.
-- [ ] Integración completa de LaTeX para fórmulas matemáticas.
+- [x] Integración completa de LaTeX (KaTeX) para fórmulas matemáticas.
+- [x] Modo Tutor con explicaciones paso a paso.
+- [x] Laboratorio de Álgebra Simbólica y Evaluación.
 - [ ] Más tipos de gráficos avanzados.
 - [ ] Integración de reconocimiento de escritura manual mediante IA.
 

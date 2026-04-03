@@ -20,6 +20,7 @@ import { LabAIScreen } from './components/screens/LabAIScreen';
 import { ProgrammerScreen } from './components/screens/ProgrammerScreen';
 import { GraphingScreen } from './components/screens/GraphingScreen';
 import { ConstantsScreen } from './components/screens/ConstantsScreen';
+import { AlgebraScreen } from './components/screens/AlgebraScreen';
 import { MoreScreen } from './components/screens/MoreScreen';
 
 // Layout Components
@@ -30,12 +31,37 @@ import { DesktopHistorySidebar } from './components/layout/DesktopHistorySidebar
 import { BottomNavBar } from './components/layout/BottomNavBar';
 import { SettingsModal } from './components/layout/SettingsModal';
 import { GlobalErrorBoundary } from './components/GlobalErrorBoundary';
+import { TutorBoard } from './components/layout/TutorBoard';
 
 export const HelpContext = React.createContext<{ showHelp: boolean }>({ showHelp: false });
 
 function AppContent() {
   const { t } = useI18n();
   const [mode, setMode] = useState<Mode>(Mode.Scientific);
+  const modesOrder = [
+    Mode.Scientific,
+    Mode.Matrices,
+    Mode.Vectors,
+    Mode.Statistics,
+    Mode.Equations,
+    Mode.Units,
+    Mode.Complex,
+    Mode.Graphing,
+    Mode.LabAI,
+    Mode.Programmer,
+    Mode.Constants,
+    Mode.Algebra,
+    Mode.More
+  ];
+  const [prevIndex, setPrevIndex] = useState(0);
+  const currentIndex = modesOrder.indexOf(mode);
+  const direction = currentIndex >= prevIndex ? 1 : -1;
+  const distance = Math.abs(currentIndex - prevIndex);
+
+  useEffect(() => {
+    setPrevIndex(currentIndex);
+  }, [currentIndex]);
+
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState<'general' | 'howto'>('general');
   const [showHistory, setShowHistory] = useState(false);
@@ -62,6 +88,13 @@ function AppContent() {
     }
     return 'light';
   });
+  const [isTutorMode, setIsTutorMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('calculator-tutor-mode') === 'true';
+    }
+    return false;
+  });
+  const [tutorData, setTutorData] = useState<any>(null);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -73,7 +106,8 @@ function AppContent() {
     localStorage.setItem('calculator-theme', theme);
     localStorage.setItem('calculator-advanced', String(isAdvanced));
     localStorage.setItem('calculator-graphing-enabled', String(isGraphingEnabled));
-  }, [theme, isAdvanced, isGraphingEnabled]);
+    localStorage.setItem('calculator-tutor-mode', String(isTutorMode));
+  }, [theme, isAdvanced, isGraphingEnabled, isTutorMode]);
 
   const renderScreen = () => {
     const addHistory = (expr: string, res: string) => {
@@ -81,20 +115,39 @@ function AppContent() {
     };
 
     switch (mode) {
-      case Mode.Scientific: return <ScientificScreen onResult={addHistory} isAdvanced={isAdvanced} />;
+      case Mode.Scientific: return <ScientificScreen onResult={addHistory} isAdvanced={isAdvanced} setTutorData={setTutorData} />;
       case Mode.Matrices: return <MatricesScreen isAdvanced={isAdvanced} />;
       case Mode.Vectors: return <VectorsScreen isAdvanced={isAdvanced} />;
       case Mode.Statistics: return <StatisticsScreen isAdvanced={isAdvanced} />;
       case Mode.Equations: return <EquationsScreen isAdvanced={isAdvanced} initialType={initialEquationType} />;
       case Mode.Units: return <UnitsScreen isAdvanced={isAdvanced} />;
       case Mode.Complex: return <ComplexScreen isAdvanced={isAdvanced} />;
-      case Mode.Graphing: return isGraphingEnabled ? <GraphingScreen isAdvanced={isAdvanced} /> : <ScientificScreen onResult={addHistory} isAdvanced={isAdvanced} />;
+      case Mode.Graphing: return isGraphingEnabled ? <GraphingScreen isAdvanced={isAdvanced} /> : <ScientificScreen onResult={addHistory} isAdvanced={isAdvanced} setTutorData={setTutorData} />;
       case Mode.LabAI: return <LabAIScreen isAdvanced={isAdvanced} />;
       case Mode.Programmer: return <ProgrammerScreen isAdvanced={isAdvanced} />;
       case Mode.Constants: return <ConstantsScreen isAdvanced={isAdvanced} />;
+      case Mode.Algebra: return <AlgebraScreen isAdvanced={isAdvanced} />;
       case Mode.More: return <MoreScreen setMode={setMode} isAdvanced={isAdvanced} isGraphingEnabled={isGraphingEnabled} onSettings={() => { setShowSettings(true); setSettingsTab('general'); }} />;
-      default: return <ScientificScreen onResult={addHistory} isAdvanced={isAdvanced} />;
+      default: return <ScientificScreen onResult={addHistory} isAdvanced={isAdvanced} setTutorData={setTutorData} />;
     }
+  };
+
+  const screenVariants = {
+    enter: (custom: { direction: number, distance: number }) => ({
+      x: custom.direction * (100 + custom.distance * 40),
+      opacity: 0,
+      scale: 0.98
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1
+    },
+    exit: (custom: { direction: number, distance: number }) => ({
+      x: custom.direction * -(100 + custom.distance * 40),
+      opacity: 0,
+      scale: 0.98
+    })
   };
 
   return (
@@ -114,18 +167,36 @@ function AppContent() {
           />
           
           <main className="flex-1 overflow-hidden pt-16 pb-20 lg:pt-12 lg:pb-12 px-2 sm:px-4 lg:px-8 w-full flex flex-col">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={mode}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="max-w-6xl mx-auto h-full w-full flex flex-col min-h-0"
-              >
-                {renderScreen()}
-              </motion.div>
-            </AnimatePresence>
+            <div className={`flex-1 flex flex-col lg:flex-row gap-6 h-full min-h-0 ${isTutorMode ? 'max-w-full' : 'max-w-6xl mx-auto w-full'}`}>
+              <AnimatePresence mode="wait" custom={{ direction, distance }}>
+                <motion.div
+                  key={mode}
+                  custom={{ direction, distance }}
+                  variants={screenVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ 
+                    x: { type: "spring", stiffness: 300, damping: 30 },
+                    opacity: { duration: 0.2 },
+                    scale: { duration: 0.2 }
+                  }}
+                  className={`flex flex-col min-h-0 transition-all duration-500 ${isTutorMode ? 'lg:w-[60%]' : 'w-full'}`}
+                >
+                  {renderScreen()}
+                </motion.div>
+              </AnimatePresence>
+
+              {isTutorMode && (
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="lg:w-[40%] h-full min-h-0 flex flex-col"
+                >
+                  <TutorBoard data={tutorData} />
+                </motion.div>
+              )}
+            </div>
           </main>
 
           <BottomNavBar currentMode={mode} setMode={setMode} />
@@ -144,6 +215,8 @@ function AppContent() {
           setTheme={setTheme}
           isGraphingEnabled={isGraphingEnabled}
           setIsGraphingEnabled={setIsGraphingEnabled}
+          isTutorMode={isTutorMode}
+          setIsTutorMode={setIsTutorMode}
           showHelp={showHelp}
           setShowHelp={setShowHelp}
         />

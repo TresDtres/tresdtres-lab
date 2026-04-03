@@ -72,6 +72,7 @@ export const MoreScreen = ({ setMode, isAdvanced, isGraphingEnabled, onSettings 
     { id: Mode.LabAI, name: 'Lab AI', icon: <Bot className="w-6 h-6" />, color: 'bg-cyan-500' },
     { id: Mode.Programmer, name: 'Programmer', icon: <Cpu className="w-6 h-6" />, color: 'bg-slate-500' },
     { id: Mode.Constants, name: 'Constants', icon: <Database className="w-6 h-6" />, color: 'bg-amber-500' },
+    { id: Mode.Algebra, name: 'Algebra', icon: <Variable className="w-6 h-6" />, color: 'bg-orange-600' },
     ...(isGraphingEnabled ? [{ id: Mode.Graphing, name: 'Graphing', icon: <TrendingUp className="w-6 h-6" />, color: 'bg-rose-500' }] : []),
   ];
 

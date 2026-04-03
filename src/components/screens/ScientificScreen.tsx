@@ -30,9 +30,10 @@ import { Latex } from '../Latex';
 interface ScientificScreenProps {
   onResult: (expr: string, res: string) => void;
   isAdvanced: boolean;
+  setTutorData: (data: any) => void;
 }
 
-export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps) => {
+export const ScientificScreen = ({ onResult, isAdvanced, setTutorData }: ScientificScreenProps) => {
   const { t } = useI18n();
   const [display, setDisplay] = useState('0');
   const [result, setResult] = useState<string | null>(null);
@@ -40,6 +41,73 @@ export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps
   const [isInverse, setIsInverse] = useState(false);
   const [angleUnit, setAngleUnit] = useState<'deg' | 'rad' | 'grad'>('deg');
   const displayRef = useRef<HTMLDivElement>(null);
+
+  const analyzeExpression = (expr: string) => {
+    const steps: any[] = [];
+    let title = t('tutor.title');
+    let explanation = "";
+    let tip = "";
+
+    if (expr.includes('+') || expr.includes('-') || expr.includes('·') || expr.includes('÷')) {
+      title = t('tutor.hierarchy');
+      explanation = t('tutor.hierarchy_desc');
+      
+      if (expr.includes('(')) {
+        steps.push({
+          label: t('shortcuts.open_paren'),
+          formula: expr,
+          desc: "Primero resolvemos lo que está dentro de los paréntesis."
+        });
+      }
+
+      if (expr.includes('^') || expr.includes('sqrt')) {
+        steps.push({
+          label: t('shortcuts.power'),
+          desc: "Luego calculamos potencias y raíces."
+        });
+      }
+
+      if (expr.includes('·') || expr.includes('÷')) {
+        steps.push({
+          label: t('shortcuts.operators'),
+          desc: "Continuamos con multiplicaciones y divisiones de izquierda a derecha."
+        });
+      }
+
+      steps.push({
+        label: "Suma y Resta",
+        desc: "Finalmente, realizamos las sumas y restas restantes."
+      });
+
+      tip = "Recuerda que el orden PEMDAS es la clave para no cometer errores en operaciones combinadas.";
+    } else if (/[xyz]/.test(expr)) {
+      title = "Álgebra";
+      explanation = "Estás trabajando con expresiones algebraicas que contienen variables.";
+      steps.push({
+        label: "Términos Algebraicos",
+        desc: "En álgebra, las letras representan valores desconocidos o variables."
+      });
+      tip = "Puedes simplificar expresiones, pero para obtener un resultado numérico necesitas asignar valores a las variables.";
+    } else if (expr.includes('sin') || expr.includes('cos') || expr.includes('tan')) {
+      title = "Trigonometría";
+      explanation = `Estás calculando una función trigonométrica en modo ${angleUnit.toUpperCase()}.`;
+      steps.push({
+        label: "Relación Circular",
+        desc: "Estas funciones relacionan los ángulos con las proporciones de los lados de un triángulo rectángulo."
+      });
+      tip = `Asegúrate de estar en el modo correcto (${angleUnit.toUpperCase()}) según tu problema.`;
+    }
+
+    setTutorData(steps.length > 0 ? { title, explanation, steps, tip } : null);
+  };
+
+  useEffect(() => {
+    if (display !== '0') {
+      analyzeExpression(display);
+    } else {
+      setTutorData(null);
+    }
+  }, [display]);
 
   const handleKeyPress = (key: string) => {
     if (key === 'AC') {
@@ -52,11 +120,29 @@ export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps
         const config = {
           angles: angleUnit
         };
-        const res = math.evaluate(display, config);
-        const formatted = math.format(res, { precision: 14 });
-        setResult(formatted.toString());
-        setHistory(prev => [display + ' = ' + formatted.toString(), ...prev].slice(0, 20));
-        setDisplay(formatted.toString());
+        // Sanitize input: replace '·' with '*' and '÷' with '/' for mathjs
+        const sanitized = display.replace(/·/g, '*').replace(/÷/g, '/');
+        
+        // Check if there are variables (x, y, z)
+        const hasVariables = /[xyz]/.test(sanitized);
+        
+        if (hasVariables) {
+          // If there are variables, we just parse it to show we understand it's a term
+          // but we can't "evaluate" to a number without values.
+          // We could potentially use math.simplify or just return the expression.
+          const parsed = math.parse(sanitized);
+          const simplified = math.simplify(parsed);
+          const resultTex = toLatex(simplified.toString());
+          setResult(resultTex);
+          setHistory(prev => [display + ' = ' + resultTex, ...prev].slice(0, 20));
+        } else {
+          const res = math.evaluate(sanitized, config);
+          const formatted = math.format(res, { precision: 14 });
+          const resultTex = toLatex(formatted.toString());
+          setResult(resultTex);
+          setHistory(prev => [display + ' = ' + resultTex, ...prev].slice(0, 20));
+          setDisplay(formatted.toString());
+        }
       } catch (e) {
         setResult('Error');
       }
@@ -66,15 +152,29 @@ export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps
         setDisplay(prev => prev === '0' ? lastResult : prev + lastResult);
       }
     } else {
-      setDisplay(prev => prev === '0' ? key : prev + key);
+      // Map '*' to '·' and '/' to '÷' for display purposes
+      let displayKey = key;
+      if (key === '*') displayKey = '·';
+      if (key === '/') displayKey = '÷';
+      
+      setDisplay(prev => prev === '0' ? displayKey : prev + displayKey);
     }
   };
 
-  useKeyboardInput(handleKeyPress);
+  useKeyboardInput((key) => {
+    // Map keyboard '*' to our display '·'
+    if (key === '*') {
+      handleKeyPress('·');
+    } else if (key === '/') {
+      handleKeyPress('÷');
+    } else {
+      handleKeyPress(key);
+    }
+  });
 
   const mainKeys = [
     ['7', '8', '9', 'DEL', 'AC'],
-    ['4', '5', '6', '*', '/'],
+    ['4', '5', '6', '·', '÷'],
     ['1', '2', '3', '+', '-'],
     ['0', '.', 'EXP', 'ANS', '=']
   ];
@@ -82,7 +182,7 @@ export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps
   const scientificKeys = [
     [isInverse ? 'asin' : 'sin', isInverse ? 'acos' : 'cos', isInverse ? 'atan' : 'tan', '(', ')'],
     [isInverse ? '10^x' : 'log', isInverse ? 'e^x' : 'ln', 'sqrt', 'pow', 'pi'],
-    ['abs', 'fact', 'mod', 'inv', 'e']
+    ['x', 'y', 'z', 'inv', 'e']
   ];
 
   return (
@@ -108,13 +208,19 @@ export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps
 
       <section className={`${isAdvanced ? 'bg-surface-container-lowest border-primary/20 shadow-xl' : 'bg-surface-container-high border-outline-variant/15'} rounded-3xl p-6 lg:p-10 border flex flex-col justify-end min-h-[140px] lg:min-h-[180px] relative overflow-hidden shrink-0`}>
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-        <div className="flex flex-col items-end gap-2 relative z-10">
-          <div className="text-sm font-mono text-on-surface-variant opacity-40 truncate w-full text-right overflow-x-auto scrollbar-hide h-6">
-            <Latex formula={toLatex(display)} className="text-on-surface-variant" />
+        <div className="flex flex-col items-end gap-3 relative z-10">
+          <div className="w-full text-right overflow-x-auto scrollbar-hide min-h-[60px] flex items-center justify-end">
+            <Latex formula={toLatex(display)} className="text-primary text-3xl lg:text-5xl font-medium" />
           </div>
-          <div className="text-4xl lg:text-6xl font-black text-primary font-mono tracking-tighter truncate w-full text-right overflow-x-auto scrollbar-hide">
-            {result || display}
+          <div className="text-sm lg:text-base font-mono text-on-surface-variant opacity-40 truncate w-full text-right overflow-x-auto scrollbar-hide">
+            {display}
           </div>
+          {result && (
+            <div className="text-xl lg:text-2xl font-black text-secondary mt-2 flex items-center justify-end gap-2">
+              <span className="font-mono tracking-tighter">=</span>
+              <Latex formula={result} />
+            </div>
+          )}
         </div>
       </section>
 
@@ -127,7 +233,7 @@ export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps
                 variant="ghost" 
                 className="h-10 lg:h-12 text-[10px] font-bold uppercase tracking-widest"
                 onClick={() => {
-                  if (k === '(' || k === ')' || k === 'pi' || k === 'e') {
+                  if (k === '(' || k === ')' || k === 'pi' || k === 'e' || k === 'x' || k === 'y' || k === 'z') {
                     handleKeyPress(k);
                   } else if (k === '10^x') {
                     handleKeyPress('10^');

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calculator, Grid3X3, Terminal, BarChart3, MoreHorizontal } from 'lucide-react';
+import { Calculator, Grid3X3, Terminal, BarChart3, MoreHorizontal, Variable } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { Mode } from '../../types';
 
@@ -12,9 +12,9 @@ export const BottomNavBar = ({ currentMode, setMode }: BottomNavBarProps) => {
   const { t } = useI18n();
   const navItems = [
     { id: Mode.Scientific, label: t('modes.scientific'), icon: Calculator },
+    { id: Mode.Algebra, label: t('algebra.title'), icon: Variable },
     { id: Mode.Matrices, label: t('modes.matrices'), icon: Grid3X3 },
     { id: Mode.LabAI, label: t('modes.lab_ai'), icon: Terminal },
-    { id: Mode.Statistics, label: t('modes.statistics'), icon: BarChart3 },
     { id: Mode.More, label: t('modes.more'), icon: MoreHorizontal },
   ];
 

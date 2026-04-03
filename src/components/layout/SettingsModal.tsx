@@ -15,6 +15,8 @@ interface SettingsModalProps {
   setTheme: (theme: 'light' | 'dark') => void;
   isGraphingEnabled: boolean;
   setIsGraphingEnabled: (val: boolean) => void;
+  isTutorMode: boolean;
+  setIsTutorMode: (val: boolean) => void;
   showHelp: boolean;
   setShowHelp: (val: boolean) => void;
 }
@@ -30,6 +32,8 @@ export const SettingsModal = ({
   setTheme,
   isGraphingEnabled,
   setIsGraphingEnabled,
+  isTutorMode,
+  setIsTutorMode,
   showHelp,
   setShowHelp
 }: SettingsModalProps) => {
@@ -188,6 +192,22 @@ export const SettingsModal = ({
                   >
                     <motion.div 
                       animate={{ x: isGraphingEnabled ? 22 : 4 }}
+                      className="absolute top-1 w-3 h-3 bg-white rounded-full shadow-sm"
+                    />
+                  </button>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">{t('settings.tutor_mode')}</span>
+                    <span className="text-[9px] text-on-surface-variant opacity-60 uppercase tracking-widest">{t('settings.tutor_mode_desc')}</span>
+                  </div>
+                  <button 
+                    onClick={() => setIsTutorMode(!isTutorMode)}
+                    className={`w-10 h-5 rounded-full relative transition-colors ${isTutorMode ? 'bg-primary' : 'bg-outline-variant/30'}`}
+                    aria-label={`Toggle tutor mode. Currently ${isTutorMode ? 'enabled' : 'disabled'}`}
+                  >
+                    <motion.div 
+                      animate={{ x: isTutorMode ? 22 : 4 }}
                       className="absolute top-1 w-3 h-3 bg-white rounded-full shadow-sm"
                     />
                   </button>

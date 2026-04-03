@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid3X3, History, Database, Sigma, Binary, FlaskConical, Settings, LifeBuoy } from 'lucide-react';
+import { Grid3X3, History, Database, Sigma, Binary, FlaskConical, Settings, LifeBuoy, Variable } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { Mode } from '../../types';
 
@@ -13,6 +13,7 @@ interface DesktopSidebarProps {
 export const DesktopSidebar = ({ currentMode, setMode, setInitialEquationType, onSettings }: DesktopSidebarProps) => {
   const { t } = useI18n();
   const items = [
+    { label: t('algebra.title'), icon: Variable, mode: Mode.Algebra },
     { label: t('modes.constants'), icon: Grid3X3, mode: Mode.Constants },
     { label: t('common.history'), icon: History, mode: Mode.Scientific },
     { label: t('sidebar.unit_prefixes'), icon: Database, mode: Mode.Units },

@@ -10,6 +10,7 @@ export enum Mode {
   Programmer = 'PROGRAMMER',
   Graphing = 'GRAPHING',
   Constants = 'CONSTANTS',
+  Algebra = 'ALGEBRA',
   More = 'MORE'
 }
 
