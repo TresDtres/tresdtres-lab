@@ -28,6 +28,7 @@ import { useKeyboardInput } from '../../hooks/useKeyboardInput';
 import { FORMULAS } from '../../constants';
 import { Formula } from '../../types';
 import { exportToPDF } from '../../lib/pdfExport';
+import { Latex } from '../Latex';
 
 interface EquationsScreenProps {
   isAdvanced: boolean;
@@ -105,9 +106,9 @@ export const EquationsScreen = ({ isAdvanced, initialType = 'quadratic' }: Equat
 
       const discriminant = b * b - 4 * a * c;
       steps.push({
-        description: "Calcular el discriminante (Δ = b² - 4ac)",
-        formula: `Δ = (${b})² - 4·(${a})·(${c}) = ${discriminant}`,
-        result: `Δ = ${discriminant}`
+        description: "Calcular el discriminante (\\Delta = b^2 - 4ac)",
+        formula: `\\Delta = (${b})^2 - 4 \\cdot (${a}) \\cdot (${c}) = ${discriminant}`,
+        result: `\\Delta = ${discriminant}`
       });
 
       if (discriminant < 0) {
@@ -115,9 +116,9 @@ export const EquationsScreen = ({ isAdvanced, initialType = 'quadratic' }: Equat
         const imag = formatNum(Math.sqrt(-discriminant) / (2 * a));
         setRoots({ x1: `${real} + ${imag}i`, x2: `${real} - ${imag}i` });
         steps.push({
-          description: "Como Δ < 0, las raíces son complejas",
-          formula: "x = (-b ± i√|Δ|) / 2a",
-          result: `x = ${real} ± ${imag}i`
+          description: "Como \\Delta < 0, las raíces son complejas",
+          formula: "x = \\frac{-b \\pm i\\sqrt{|\\Delta|}}{2a}",
+          result: `x = ${real} \\pm ${imag}i`
         });
       } else {
         const x1 = formatNum((-b + Math.sqrt(discriminant)) / (2 * a));
@@ -125,17 +126,17 @@ export const EquationsScreen = ({ isAdvanced, initialType = 'quadratic' }: Equat
         setRoots({ x1, x2 });
         steps.push({
           description: "Aplicar la fórmula cuadrática",
-          formula: "x = (-b ± √Δ) / 2a",
+          formula: "x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}",
           type: 'formula'
         });
         steps.push({
           description: "Sustituir valores",
-          formula: `x = (-(${b}) ± √${discriminant}) / (2·${a})`,
+          formula: `x = \\frac{-(${b}) \\pm \\sqrt{${discriminant}}}{2 \\cdot ${a}}`,
           type: 'substitution'
         });
         steps.push({
           description: "Calcular raíces finales",
-          result: `x₁ = ${x1}, x₂ = ${x2}`
+          result: `x_1 = ${x1}, x_2 = ${x2}`
         });
       }
       setWorksheetData({ title: "Resolución de Ecuación Cuadrática", steps });
@@ -670,31 +671,7 @@ export const EquationsScreen = ({ isAdvanced, initialType = 'quadratic' }: Equat
                         <p className="text-base font-bold text-on-surface tracking-tight">{step.description}</p>
                         {step.formula && (
                           <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10 whitespace-pre-wrap flex justify-center">
-                            {step.type === 'formula' ? (
-                              <div className="flex flex-col items-center font-serif italic text-xl lg:text-2xl text-primary">
-                                <div className="flex items-center gap-2">
-                                  <span>x =</span>
-                                  <div className="flex flex-col items-center">
-                                    <div className="border-b-2 border-primary px-4 pb-1">-b ± √b² - 4ac</div>
-                                    <div className="pt-1">2a</div>
-                                  </div>
-                                </div>
-                              </div>
-                            ) : step.type === 'substitution' ? (
-                              <div className="flex flex-col items-center font-serif italic text-lg lg:text-xl text-primary">
-                                <div className="flex items-center gap-2">
-                                  <span>x =</span>
-                                  <div className="flex flex-col items-center">
-                                    <div className="border-b-2 border-primary px-4 pb-1">
-                                      -({coeffs.b}) ± √({coeffs.b}² - 4·{coeffs.a}·{coeffs.c})
-                                    </div>
-                                    <div className="pt-1">2·{coeffs.a}</div>
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              <p className="text-sm font-mono text-primary font-bold">{step.formula}</p>
-                            )}
+                            <Latex formula={step.formula} displayMode={true} className="text-primary text-xl lg:text-2xl" />
                           </div>
                         )}
                         {step.result && (

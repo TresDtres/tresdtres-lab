@@ -33,6 +33,7 @@ import { useKeyboardInput } from '../../hooks/useKeyboardInput';
 import { Matrix as MLMatrix, LuDecomposition, QrDecomposition, SingularValueDecomposition, CholeskyDecomposition } from 'ml-matrix';
 import { exportToPDF } from '../../lib/pdfExport';
 import { Printer } from 'lucide-react';
+import { Latex } from '../Latex';
 
 interface MatricesScreenProps {
   isAdvanced: boolean;
@@ -94,10 +95,10 @@ export const MatricesScreen = ({ isAdvanced }: MatricesScreenProps) => {
   useKeyboardInput(handleKeyPress);
 
   const formatMatrix = (m: any) => {
-    const f = (v: any) => typeof v === 'number' ? parseFloat(v.toFixed(8)).toString() : v;
+    const f = (v: any) => typeof v === 'number' ? parseFloat(v.toFixed(4)).toString() : v;
     if (!Array.isArray(m)) return f(m);
-    if (!Array.isArray(m[0])) return `[${m.map(f).join(', ')}]`;
-    return `[\n  ${m.map(row => `[${row.map(f).join(', ')}]`).join(',\n  ')}\n]`;
+    if (!Array.isArray(m[0])) return `\\begin{bmatrix} ${m.map(f).join(' & ')} \\end{bmatrix}`;
+    return `\\begin{bmatrix} ${m.map(row => row.map(f).join(' & ')).join(' \\\\ ')} \\end{bmatrix}`;
   };
 
   const calculate = (op: string) => {
@@ -529,13 +530,13 @@ export const MatricesScreen = ({ isAdvanced }: MatricesScreenProps) => {
                   className="bg-surface-container-low border border-outline-variant/10 p-6 rounded-2xl space-y-4"
                 >
                   <p className="text-sm font-bold text-on-surface">{step.description}</p>
-                  <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10 font-mono text-primary text-sm overflow-x-auto">
-                    {step.formula}
+                  <div className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/10 font-mono text-primary text-sm overflow-x-auto flex justify-center">
+                    <Latex formula={step.formula} displayMode={true} className="text-primary" />
                   </div>
                   {step.result && (
-                    <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 font-mono text-primary text-sm overflow-x-auto">
+                    <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 font-mono text-primary text-sm overflow-x-auto flex flex-col items-center">
                       <span className="text-[10px] font-bold uppercase tracking-widest opacity-50 block mb-2">Result:</span>
-                      {step.result}
+                      <Latex formula={step.result} displayMode={true} className="text-primary" />
                     </div>
                   )}
                 </motion.div>

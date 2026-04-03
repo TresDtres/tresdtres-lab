@@ -22,9 +22,10 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
-import { math } from '../../lib/math';
+import { math, toLatex } from '../../lib/math';
 import { TactileButton } from '../TactileButton';
 import { useKeyboardInput } from '../../hooks/useKeyboardInput';
+import { Latex } from '../Latex';
 
 interface ScientificScreenProps {
   onResult: (expr: string, res: string) => void;
@@ -108,8 +109,8 @@ export const ScientificScreen = ({ onResult, isAdvanced }: ScientificScreenProps
       <section className={`${isAdvanced ? 'bg-surface-container-lowest border-primary/20 shadow-xl' : 'bg-surface-container-high border-outline-variant/15'} rounded-3xl p-6 lg:p-10 border flex flex-col justify-end min-h-[140px] lg:min-h-[180px] relative overflow-hidden shrink-0`}>
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
         <div className="flex flex-col items-end gap-2 relative z-10">
-          <div className="text-sm font-mono text-on-surface-variant opacity-40 truncate w-full text-right overflow-x-auto scrollbar-hide">
-            {display}
+          <div className="text-sm font-mono text-on-surface-variant opacity-40 truncate w-full text-right overflow-x-auto scrollbar-hide h-6">
+            <Latex formula={toLatex(display)} className="text-on-surface-variant" />
           </div>
           <div className="text-4xl lg:text-6xl font-black text-primary font-mono tracking-tighter truncate w-full text-right overflow-x-auto scrollbar-hide">
             {result || display}

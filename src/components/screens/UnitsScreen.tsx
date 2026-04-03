@@ -26,6 +26,7 @@ import { TactileButton } from '../TactileButton';
 import { useKeyboardInput } from '../../hooks/useKeyboardInput';
 import { CODATA_2022, ConstantData } from '../../constants/codata';
 import { exportToPDF } from '../../lib/pdfExport';
+import { Latex } from '../Latex';
 
 interface UnitsScreenProps {
   isAdvanced: boolean;
@@ -964,9 +965,7 @@ export const UnitsScreen = ({ isAdvanced }: UnitsScreenProps) => {
                         <p className="text-base font-bold text-on-surface tracking-tight">{step.description}</p>
                         {step.formula && (
                           <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/10 flex justify-center items-center">
-                            <div className="font-serif italic text-xl lg:text-2xl text-primary whitespace-pre-wrap text-center leading-relaxed">
-                              {step.formula}
-                            </div>
+                            <Latex formula={step.formula} displayMode={true} className="text-primary text-xl lg:text-2xl" />
                           </div>
                         )}
                         {step.result && (
