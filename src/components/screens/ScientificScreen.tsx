@@ -117,26 +117,33 @@ export const ScientificScreen = ({ onResult, isAdvanced, setTutorData }: Scienti
       setDisplay(prev => prev.length > 1 ? prev.slice(0, -1) : '0');
     } else if (key === '=' || key === 'Enter') {
       try {
-        const config = {
-          angles: angleUnit
-        };
         // Sanitize input: replace '·' with '*' and '÷' with '/' for mathjs
         const sanitized = display.replace(/·/g, '*').replace(/÷/g, '/');
         
+        // Create a scope with overridden trig functions to handle units
+        const scope: Record<string, any> = {};
+        if (angleUnit !== 'rad') {
+          const factor = angleUnit === 'deg' ? math.evaluate('pi / 180') : math.evaluate('pi / 200');
+          
+          scope.sin = (x: any) => (math.sin as any)(math.multiply(x, factor));
+          scope.cos = (x: any) => (math.cos as any)(math.multiply(x, factor));
+          scope.tan = (x: any) => (math.tan as any)(math.multiply(x, factor));
+          scope.asin = (x: any) => math.divide((math.asin as any)(x), factor);
+          scope.acos = (x: any) => math.divide((math.acos as any)(x), factor);
+          scope.atan = (x: any) => math.divide((math.atan as any)(x), factor);
+        }
+
         // Check if there are variables (x, y, z)
         const hasVariables = /[xyz]/.test(sanitized);
         
         if (hasVariables) {
-          // If there are variables, we just parse it to show we understand it's a term
-          // but we can't "evaluate" to a number without values.
-          // We could potentially use math.simplify or just return the expression.
           const parsed = math.parse(sanitized);
           const simplified = math.simplify(parsed);
           const resultTex = toLatex(simplified.toString());
           setResult(resultTex);
           setHistory(prev => [display + ' = ' + resultTex, ...prev].slice(0, 20));
         } else {
-          const res = math.evaluate(sanitized, config);
+          const res = math.evaluate(sanitized, scope);
           const formatted = math.format(res, { precision: 14 });
           const resultTex = toLatex(formatted.toString());
           setResult(resultTex);
