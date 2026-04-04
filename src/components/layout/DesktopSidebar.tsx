@@ -8,9 +8,10 @@ interface DesktopSidebarProps {
   setMode: (m: Mode) => void;
   setInitialEquationType: (t: any) => void;
   onSettings: () => void;
+  onDiagnostics: () => void;
 }
 
-export const DesktopSidebar = ({ currentMode, setMode, setInitialEquationType, onSettings }: DesktopSidebarProps) => {
+export const DesktopSidebar = ({ currentMode, setMode, setInitialEquationType, onSettings, onDiagnostics }: DesktopSidebarProps) => {
   const { t } = useI18n();
   const items = [
     { label: t('algebra.title'), icon: Variable, mode: Mode.Algebra },
@@ -66,6 +67,7 @@ export const DesktopSidebar = ({ currentMode, setMode, setInitialEquationType, o
             {t('settings.title')}
           </button>
           <button 
+            onClick={onDiagnostics}
             className="flex items-center gap-3 text-on-surface-variant/60 hover:text-on-surface text-xs font-bold transition-colors w-full"
             aria-label="Get support"
           >

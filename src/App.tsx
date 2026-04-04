@@ -30,6 +30,7 @@ import { DesktopSidebar } from './components/layout/DesktopSidebar';
 import { DesktopHistorySidebar } from './components/layout/DesktopHistorySidebar';
 import { BottomNavBar } from './components/layout/BottomNavBar';
 import { SettingsModal } from './components/layout/SettingsModal';
+import { DiagnosticsModal } from './components/layout/DiagnosticsModal';
 import { GlobalErrorBoundary } from './components/GlobalErrorBoundary';
 import { TutorBoard } from './components/layout/TutorBoard';
 
@@ -63,6 +64,7 @@ function AppContent() {
   }, [currentIndex]);
 
   const [showSettings, setShowSettings] = useState(false);
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
   const [settingsTab, setSettingsTab] = useState<'general' | 'howto'>('general');
   const [showHistory, setShowHistory] = useState(false);
   const [initialEquationType, setInitialEquationType] = useState<'quadratic' | 'linear2x2' | 'linear3x3' | 'chemical' | 'formula'>('quadratic');
@@ -153,7 +155,13 @@ function AppContent() {
   return (
     <HelpContext.Provider value={{ showHelp }}>
       <div className="h-screen h-[100dvh] bg-surface font-body text-on-surface selection:bg-primary/20 flex flex-col lg:flex-row overflow-hidden">
-        <DesktopSidebar currentMode={mode} setMode={setMode} setInitialEquationType={setInitialEquationType} onSettings={() => setShowSettings(true)} />
+        <DesktopSidebar 
+          currentMode={mode} 
+          setMode={setMode} 
+          setInitialEquationType={setInitialEquationType} 
+          onSettings={() => setShowSettings(true)} 
+          onDiagnostics={() => setShowDiagnostics(true)}
+        />
         
         <div className="flex-1 flex flex-col h-full overflow-hidden relative">
           <TopAppBar mode={mode} onSettings={() => setShowSettings(!showSettings)} isAdvanced={isAdvanced} />
@@ -219,6 +227,11 @@ function AppContent() {
           setIsTutorMode={setIsTutorMode}
           showHelp={showHelp}
           setShowHelp={setShowHelp}
+        />
+
+        <DiagnosticsModal 
+          isOpen={showDiagnostics} 
+          onClose={() => setShowDiagnostics(false)} 
         />
 
         <div className="fixed bottom-24 right-4 opacity-5 pointer-events-none select-none z-0">

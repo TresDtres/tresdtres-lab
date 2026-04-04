@@ -53,6 +53,21 @@ export const translations = {
       no_variables: 'No se detectaron variables',
       enter_values: 'Ingresa los valores para evaluar',
     },
+    diagnostics: {
+      title: 'Diagnóstico del Sistema',
+      subtitle: 'Auto-Test e Integridad',
+      running: 'Ejecutando...',
+      complete: 'Completado',
+      rerun: 'Re-ejecutar Tests',
+      close: 'Cerrar',
+      engine: 'Integridad del Motor Matemático',
+      i18n: 'Sistema de Internacionalización',
+      storage: 'Acceso a Almacenamiento Local',
+      algebra: 'Lógica Algebraica',
+      security: 'Sandbox de Seguridad',
+      success: 'Verificado',
+      error: 'Corrupción detectada'
+    },
     scientific: {
       display_label: 'Pantalla de Expresión Natural',
       shift: 'SHIFT',
@@ -428,6 +443,21 @@ export const translations = {
       result: 'Result',
       no_variables: 'No variables detected',
       enter_values: 'Enter values to evaluate',
+    },
+    diagnostics: {
+      title: 'System Diagnostics',
+      subtitle: 'Auto-Test & Integrity',
+      running: 'Running...',
+      complete: 'Complete',
+      rerun: 'Re-run Tests',
+      close: 'Close',
+      engine: 'Math Engine Integrity',
+      i18n: 'Internationalization System',
+      storage: 'Local Storage Access',
+      algebra: 'Algebraic Logic',
+      security: 'Security Sandbox',
+      success: 'Verified',
+      error: 'Corruption detected'
     },
     scientific: {
       display_label: 'Natural Expression Display',
